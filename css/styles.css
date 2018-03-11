@@ -74,7 +74,7 @@ header nav h1 a {
   text-transform: uppercase;
 }
 #breadcrumb {
-  padding: 10px 15px;
+  padding: 0 10px;
   list-style: none;
   background-color: #eee;
   margin: 0;
@@ -82,7 +82,7 @@ header nav h1 a {
 
 /* Display list items side by side */
 #breadcrumb li {
-  font-size: 1.2em;
+  font-size: 1.4em;
   display: inline;
 }
 
@@ -96,6 +96,8 @@ header nav h1 a {
 /* Add a color to all links inside the list */
 #breadcrumb li a {
   color: #0275d8;
+  display: inline-block;
+  padding: 10px 5px;
   text-decoration: none;
 }
 
