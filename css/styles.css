@@ -256,7 +256,10 @@ header nav h1 a {
 #restaurant-hours td {
   color: #666;
   font-size: 1.2em;
-  padding: 0 20px;
+  padding: 5px 20px;
+}
+#restaurant-hours td:first-of-type {
+  font-weight: 500;
 }
 
 /* ====================== Reviews List ====================== */
