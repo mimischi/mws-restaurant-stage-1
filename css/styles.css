@@ -287,7 +287,7 @@ header nav h1 a {
   background-color: #fff;
   font-size: 1.4em;
   margin: 0;
-  padding: 0 20px;
+  padding: 10px 20px 0;
 }
 #restaurant-hours {
   background-color: #fff;
@@ -297,6 +297,7 @@ header nav h1 a {
   -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
     0 6px 6px rgba(0, 0, 0, 0.23);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  width: 100%;
 }
 #restaurant-hours td {
   color: #666;
@@ -382,4 +383,94 @@ header nav h1 a {
   padding-bottom: 20px;
   font-size: 1.4em;
   color: #444;
+}
+
+/* ====================== Media Queries ====================== */
+@media screen and (min-width: 549px) {
+  footer {
+    font-size: 1.0em;
+  }
+  /* ====================== Header ====================== */
+  #breadcrumb li {
+    font-size: 1.8em;
+  }
+  /* ====================== Restaurant Filtering ====================== */
+  .filter-options h2 {
+    font-size: 1.8em;
+  }
+  .filter-options select {
+    font-size: 1.5em;
+  }
+  /* ====================== Restaurant Detail ====================== */
+  #restaurant-name,
+  #restaurant-address {
+    font-size: 1.6em;
+  }
+  #restaurant-cuisine,
+  #restaurant-hours {
+    font-size: 1.4em;
+  }
+  #restaurant-hours td:last-of-type {
+    text-align: right;
+  }
+  /* ====================== Restaurant List ====================== */
+  #restaurants-list li h1 {
+    font-size: 1.8em;
+  }
+  #restaurants-list li p,
+  #restaurants-list li a {
+    font-size: 1.5em;
+  }
+}
+@media screen and (min-width: 749px) {
+  #restaurant-address {
+    padding: 20px 100px 0;
+    font-size: 1.6em;
+  }
+  #restaurant-hours {
+    padding: 20px 100px;
+  }
+  #restaurant-hours td:first-of-type {
+    padding: 0;
+  }
+}
+
+@media screen and (min-width: 959px) {
+  body {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  /* ====================== Restaurant Detail ====================== */
+  #restaurant-name {
+    font-size: 1.8em;
+  }
+  #restaurant-cuisine {
+    font-size: 1.6em;
+  }
+  /* ====================== Reviews List ====================== */
+  
+  #reviews-list li p.reviewer-date {
+    text-align: center;
+  }
+  #reviews-list li p.date {
+    float: none;
+    /* margin: 0 0 0 10px; */
+    color: #fff;
+    font-size: 1.4em;
+    width: inherit;
+  }
+  #reviews-list li p.date::before {
+    content: '-';
+    margin: 0 10px 0;
+  }
+  #reviews-list li p.rating {
+    max-width: 200px;
+  }
+  #reviews-list li p.comments {
+    font-size: 1.5em;
+  }
+  /* ====================== Header ====================== */
+  /* #breadcrumb li {
+    font-size: 2em;
+  } */
 }
