@@ -58,52 +58,51 @@ footer {
 /* ====================== Header ====================== */
 header {
   width: 100%;
-  padding: 25px 0;
-  text-align: center;
   background-color: #252831;
   order: 0;
 }
-header h1 {
+header nav h1 {
+  padding: 25px 0;
   margin: 0;
+  text-align: center;
 }
-header h1 a {
+header nav h1 a {
   color: #fff;
-  font-size: 14pt;
+  font-size: 1.2em;
   font-weight: 200;
   letter-spacing: 10px;
   text-transform: uppercase;
 }
 #breadcrumb {
-    padding: 10px 40px 16px;
-    list-style: none;
-    background-color: #eee;
-    font-size: 17px;
-    margin: 0;
-    width: calc(50% - 80px);
+  padding: 10px 15px;
+  list-style: none;
+  background-color: #eee;
+  margin: 0;
 }
 
 /* Display list items side by side */
 #breadcrumb li {
-    display: inline;
+  font-size: 1.2em;
+  display: inline;
 }
 
 /* Add a slash symbol (/) before/behind each list item */
 #breadcrumb li+li:before {
-    padding: 8px;
-    color: black;
-    content: "/\00a0";
+  padding: 8px;
+  color: black;
+  content: "/\00a0";
 }
 
 /* Add a color to all links inside the list */
 #breadcrumb li a {
-    color: #0275d8;
-    text-decoration: none;
+  color: #0275d8;
+  text-decoration: none;
 }
 
 /* Add a color on mouse-over */
 #breadcrumb li a:hover {
-    color: #01447e;
-    text-decoration: underline;
+  color: #01447e;
+  text-decoration: underline;
 }
 /* ====================== Map ====================== */
 #map {
@@ -163,7 +162,6 @@ header h1 a {
   font-family: Arial,sans-serif;
   min-height: 380px;
   margin: 20px;
-  /* padding: 0 20px; */
   text-align: left;
 }
 #restaurants-list li h1,
@@ -212,29 +210,12 @@ header h1 a {
 }
 
 /* ====================== Restaurant Details ====================== */
-.inside header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-}
-.inside #map-container {
-  background: blue none repeat scroll 0 0;
-  height: 87%;
-  position: fixed;
-  right: 0;
-  top: 80px;
-  width: 50%;
-}
-.inside #map {
-  background-color: #ccc;
-  height: 100%;
-  width: 100%;
-}
-.inside #footer {
-  bottom: 0;
-  position: absolute;
-  width: 50%;
+#restaurant-container, #reviews-container {
+  border-bottom: 1px solid #d9d9d9;
+  border-top: 1px solid #fff;
+  padding: 0 0 15px;
+  font-size: 1.2em;
+  background-color: #fff;
 }
 #restaurant-name {
   color: #f18200;
@@ -242,37 +223,40 @@ header h1 a {
   font-size: 20pt;
   font-weight: 200;
   letter-spacing: 0;
-  margin: 15px 0 30px;
+  margin: 0;
+  padding: 20px;
   text-transform: uppercase;
   line-height: 1.1;
 }
 #restaurant-img {
-	width: 90%;
-}
-#restaurant-address {
-  font-size: 12pt;
-  margin: 10px 0px;
+  width: 100%;
+  margin: 0;
 }
 #restaurant-cuisine {
   background-color: #333;
   color: #ddd;
-  font-size: 12pt;
-  font-weight: 300;
+  font-weight: bold;
   letter-spacing: 10px;
-  margin: 0 0 20px;
-  padding: 2px 0;
+  line-height: 3em;
+  margin: 0;
+  font-size: 1em;
   text-align: center;
   text-transform: uppercase;
-	width: 90%;
+	width: 100%;
 }
-#restaurant-container, #reviews-container {
-  border-bottom: 1px solid #d9d9d9;
-  border-top: 1px solid #fff;
-  padding: 140px 40px 30px;
-  width: 50%;
+#restaurant-address {
+  font-size: 1.4em;
+  padding: 0 20px;
 }
+#restaurant-hours td {
+  color: #666;
+  font-size: 1.2em;
+  padding: 0 20px;
+}
+
+/* ====================== Reviews List ====================== */
 #reviews-container {
-  padding: 30px 40px 80px;
+  padding: 30px 20px 15px;
 }
 #reviews-container h2 {
   color: #f58500;
@@ -284,21 +268,50 @@ header h1 a {
 #reviews-list {
   margin: 0;
   padding: 0;
+  width: 100%;
 }
 #reviews-list li {
   background-color: #fff;
-    border: 2px solid #f3f3f3;
+  border: 2px solid #f3f3f3;
   display: block;
   list-style-type: none;
-  margin: 0 0 30px;
-  overflow: hidden;
-  padding: 0 20px 20px;
-  position: relative;
-  width: 85%;
+  margin: 0 0 20px;
 }
 #reviews-list li p {
   margin: 0 0 10px;
+  font-size: 1.6em;
 }
-#restaurant-hours td {
-  color: #666;
+#reviews-list li p.reviewer-date {
+  background-color: #333;
+  padding: 10px 10px 10px 20px;
+  font-size: 1em;
+}
+#reviews-list li p.reviewer,
+#reviews-list li p.date {
+  color: #fff;
+  margin: 0;
+  display: inline-block;
+}
+#reviews-list li p.date {
+  float: right;
+  text-align: right;
+  padding-top: 5px;
+  width: 60%;
+  font-size: 1.1em;
+  color: #ccc;
+}
+#reviews-list li p.rating {
+  background-color: orange;
+  width: 30%;
+  padding: 4px;
+  margin: 20px 20px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+#reviews-list li p.comments {
+  margin: 0 20px;
+  color: #444;
 }
