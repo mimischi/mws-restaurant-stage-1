@@ -244,22 +244,27 @@ header nav h1 a {
 #reviews-container {
   padding: 0 0 15px;
   font-size: 1.2em;
-  background-color: #fff;
+}
+#restaurant-container {
+  margin: 20px 20px;
+  padding: 0;
+  border-radius: 0 0 15px 0;
 }
 #restaurant-name {
   color: #f18200;
   font-family: Arial, sans-serif;
-  font-size: 20pt;
+  font-size: 1.4em;
   font-weight: 200;
   letter-spacing: 0;
   margin: 0;
-  padding: 20px;
+  padding: 20px 0;
   text-transform: uppercase;
   line-height: 1.1;
 }
 #restaurant-img {
   width: 100%;
   vertical-align: top;
+  border-radius: 15px 0 0 0;
 }
 #restaurant-cuisine {
   background-color: #333;
@@ -274,8 +279,24 @@ header nav h1 a {
   width: 100%;
 }
 #restaurant-address {
+  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
+    0 6px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
+    0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  background-color: #fff;
   font-size: 1.4em;
+  margin: 0;
   padding: 0 20px;
+}
+#restaurant-hours {
+  background-color: #fff;
+  border-radius: 0 0 15px 0;
+  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
+    0 6px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
+    0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 }
 #restaurant-hours td {
   color: #666;
@@ -283,12 +304,13 @@ header nav h1 a {
   padding: 5px 20px;
 }
 #restaurant-hours td:first-of-type {
-  font-weight: 500;
+  padding: 5px 0px 5px 20px;
+  vertical-align: top;
+  width: 30%;
 }
 
 /* ====================== Reviews List ====================== */
 #reviews-container {
-  background-color: #eee;
   padding: 10px 20px 15px;
 }
 #reviews-container h2 {
