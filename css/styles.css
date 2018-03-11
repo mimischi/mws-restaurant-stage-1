@@ -233,8 +233,7 @@ header nav h1 a {
 }
 #restaurant-img {
   width: 100%;
-  padding: 0;
-  margin: 0;
+  vertical-align: top;
 }
 #restaurant-cuisine {
   background-color: #333;
@@ -242,7 +241,6 @@ header nav h1 a {
   font-weight: bold;
   letter-spacing: 10px;
   line-height: 3em;
-  padding: 0;
   margin: 0;
   font-size: 1em;
   text-align: center;
