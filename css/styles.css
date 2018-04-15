@@ -461,7 +461,7 @@ header nav h1 a {
 }
 
 @media screen and (min-width: 959px) {
-  body {
+  #result-container {
     max-width: 960px;
     margin: 0 auto;
   }
