@@ -1,6 +1,8 @@
+var staticCacheName = "mws-restaurant"
+
 self.addEventListener('install', (event) => {
  event.waitUntil(
-   caches.open('restaurant').then((cache) => {
+   caches.open(staticCacheName).then((cache) => {
      return cache.addAll([
        '/',
        '/index.html',
@@ -9,7 +11,6 @@ self.addEventListener('install', (event) => {
        '/js/dbhelper.js',
        '/js/main.js',
        '/js/restaurant_info.js',
-       '/data/restaurants.json',
        '/img/',
        '/img/1.jpg',
        '/img/2.jpg',
@@ -32,16 +33,32 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   console.log('Activating service worker...');
+
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.filter(cacheName => {
+          cacheName.startsWith('mws-') && cacheName != staticCacheName;
+        }).map(cacheName => caches.delete(cacheName))
+      ).then(() => console.log('Activated service worker!'))
+    })
+  )
 });
 
 self.addEventListener('fetch', (event) => {
-  // Do not use service worker for the Google Maps API
-  if (event.request.url.indexOf('maps.googleapis.com') !== -1) return;
+  // Do not use service worker for the Google Maps API or restaurants API
+  if (event.request.url.indexOf('maps.googleapis.com') !== -1 || event.request.url.indexOf('/restaurants/')) {
+    return;
+  }
 
   event.respondWith(
-    caches.open('restaurant').then((cache) => {
+    caches.open(staticCacheName).then((cache) => {
       return cache.match(event.request).then((response) => {
         return response || fetch(event.request).then((response) => {
+          if (response.status === 404) {
+            console.log(`You're offline!`);
+            return;
+          }
           cache.put(event.request, response.clone());
           return response;
         });

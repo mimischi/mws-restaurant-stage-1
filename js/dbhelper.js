@@ -2,33 +2,92 @@
  * Common database helper functions.
  */
 class DBHelper {
+  /**
+   * Open Database
+   */
+  static openDatabase() {
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+  
+    return idb.open('restaurants', 1, function(upgradeDb) {
+      var store = upgradeDb.createObjectStore('restaurants', {
+        keyPath: 'id'
+      });
+      store.createIndex('by-id', 'id');
+    });
+  }
 
   /**
    * Database URL.
-   * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
+  }
+
+  /**
+   * Grab all restaurants from the cache.
+   */
+  static getCachedRestaurants() {
+    return DBHelper.openDatabase().then(db => {
+      const tx = db.transaction("restaurants");
+      const store = tx.objectStore("restaurants");
+
+      return store.getAll();
+    })
+  }
+
+  /**
+   * Grab specific restaurant from the cache
+   */
+  static getCachedRestaurant(id) {
+    return DBHelper.openDatabase().then(db => {
+      const tx = db.transaction("restaurants");
+      const store = tx.objectStore("restaurants");
+
+      return store.get(parseInt(id));
+    })
+  }
+
+  /**
+   * Write all restaurants to store
+   */
+  static writeRestaurantstoCache(restaurants) {
+    return DBHelper.openDatabase().then(db => {
+      const tx = db.transaction("restaurants", "readwrite");
+      const store = tx.objectStore("restaurants");
+
+      for (let restaurant of restaurants) {
+        store.put(restaurant)
+      }
+
+      return tx.complete;
+    })
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
+    DBHelper.getCachedRestaurants()
+    .then(restaurants => {
+      if (restaurants.length !== 0) {
+        return callback(null, restaurants)
       }
-    };
-    xhr.send();
+
+      fetch(`${DBHelper.DATABASE_URL}`)
+      .then(response => response.json())
+      .then(restaurants => {
+
+        // Write all fetched restaurants to cache and return the request.
+        DBHelper.writeRestaurantstoCache(restaurants)
+        .then(() => console.log("Added all restaurants to IndexedDB."))
+        .catch(error => console.log(error))
+        .finally(() => callback(null, restaurants))
+      })
+      .catch(error => callback(`Request failed. Returned status of ${error.statusText}`, null));
+    });
   }
 
   /**
@@ -150,7 +209,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return (`/img/${restaurant.photograph}.jpg`);
   }
 
   /**
