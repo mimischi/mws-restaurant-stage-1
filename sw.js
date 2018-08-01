@@ -47,22 +47,44 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   // Do not use service worker for the Google Maps API or restaurants API
-  if (event.request.url.indexOf('maps.googleapis.com') !== -1 || event.request.url.indexOf('/restaurants/')) {
+  if (event.request.url.indexOf('maps.googleapis.com') !== -1 || event.request.url.indexOf('/restaurants/') !== -1) {
     return;
   }
 
   event.respondWith(
-    caches.open(staticCacheName).then((cache) => {
-      return cache.match(event.request).then((response) => {
-        return response || fetch(event.request).then((response) => {
-          if (response.status === 404) {
-            console.log(`You're offline!`);
-            return;
-          }
-          cache.put(event.request, response.clone());
+    caches.match(event.request).then(response => {
+      if (response) return response;
+
+      let fetchRequest = event.request.clone();
+
+      return fetch(fetchRequest).then(response => {
+        if (!response || response.status !== 200 || response.type !== 'basic') {
+
+          console.log('asd')
           return response;
+        }
+        console.log('dsa')
+
+        let responseToCache = response.clone();
+
+        caches.open(staticCacheName).then(cache => {
+          cache.put(event.request, responseToCache);
         });
-      });
+
+        return response;
+      })
     })
+    // caches.open(staticCacheName).then((cache) => {
+    //   return cache.match(event.request).then((response) => {
+    //     return response || fetch(event.request).then((response) => {
+    //       if (response.status === 404) {
+    //         console.log(`You're offline!`);
+    //         return;
+    //       }
+    //       cache.put(event.request, response.clone());
+    //       return response;
+    //     });
+    //   });
+    // })
   );
 });
