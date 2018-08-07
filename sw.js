@@ -59,11 +59,8 @@ self.addEventListener('fetch', (event) => {
 
       return fetch(fetchRequest).then(response => {
         if (!response || response.status !== 200 || response.type !== 'basic') {
-
-          console.log('asd')
           return response;
         }
-        console.log('dsa')
 
         let responseToCache = response.clone();
 
