@@ -385,6 +385,29 @@ header nav h1 a {
   color: #444;
 }
 
+/* ====================== User review ====================== */
+#reviews-container,
+#review-section {
+  font-size: 2em;
+  padding: 10px 20px 15px;
+}
+
+#review-section p,
+#review-form input[type="text"],
+#review-form select,
+#review-form textarea,
+#review-form input[type="submit"] {
+  font-size: 1em;
+}
+
+#review-form label {
+  width: 100px;
+}
+
+#review-form select {
+  width: 50px;
+}
+
 /* ====================== Media Queries ====================== */
 @media screen and (min-width: 549px) {
   footer {

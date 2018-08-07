@@ -231,3 +231,41 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+submitReviewForm = (event) => {
+  let error = false;
+  const unixtimestamp = Date.now();
+  const restaurantReview = {
+    "restaurant_id": self.restaurant.id,
+    "createdAt": unixtimestamp,
+    "updatedAt": unixtimestamp,
+    "id": 10
+  };
+
+  const form = document.getElementById("review-form");
+  data = new FormData(form)
+
+  for (let [key, value] of data.entries()) {
+    if (value === undefined || value == "") {
+      console.log('Missing required fields. Exiting.');
+      error = true;
+      break;
+    }
+    restaurantReview[key] = value;
+  };
+  if (!error) {
+    appendReview(restaurantReview);
+    form.reset();
+  }
+}
+
+const appendReview = (review) => {
+  const ul = document.getElementById('reviews-list');
+  ul.insertAdjacentElement('afterbegin', createReviewHTML(review));
+}
+
+const submitButtom = document.getElementById("review-submit-button");
+submitButtom.addEventListener('click', (event) => {
+  event.preventDefault();
+  submitReviewForm(event);
+});
