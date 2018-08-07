@@ -134,9 +134,17 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 }
 
 /**
+ * Text for favorite button
+ */
+favoriteButtonText = (favorite) => {
+  return favorite ? 'Add to favorites' : 'Remove from favorites';
+}
+
+/**
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
+  let fav_status = false;
   const li = document.createElement('li');
 
   const image = document.createElement('img');
@@ -156,6 +164,20 @@ createRestaurantHTML = (restaurant) => {
   const address = document.createElement('p');
   address.innerHTML = restaurant.address;
   li.append(address);
+
+  const fav = document.createElement('a');
+  fav.innerHTML = 'Add to favorites';
+  fav.title = `Add ${restaurant.name} to your favorites.`;
+  fav.href = '#';
+  li.append(fav);
+
+  fav.addEventListener('click', (event) => {
+    event.preventDefault();
+    console.log(`Pressed favorite for ${restaurant.name}!`);
+    const newText = favoriteButtonText(fav_status);
+    fav.innerHTML = newText; 
+    fav_status = !fav_status;
+  });
 
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
