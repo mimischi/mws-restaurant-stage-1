@@ -180,6 +180,24 @@ class DBHelper {
     });
   }
 
+  static updateFavoriteAPI(restaurant_id, is_favorite) {
+    const updateFavoriteURL = `${DBHelper.DATABASE_URL}/${restaurant_id}/?is_favorite=${is_favorite}`;
+    fetch(updateFavoriteURL, { method: 'PUT'})
+      .then(() => {
+        DBHelper.openDatabase().then(db => {
+          const tx = db.transaction("restaurants", "readwrite");
+          const store = tx.objectStore("restaurants");
+
+          store.get(restaurant_id).then((restaurant) => {
+            restaurant.is_favorite = is_favorite;
+            store.put(restaurant);
+          });
+
+          // return tx.complete;
+        });
+      })
+      .catch(e => console.log(e));
+  }
   /**
    * Fetch all cuisines with proper error handling.
    */

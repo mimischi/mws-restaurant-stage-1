@@ -134,17 +134,26 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 }
 
 /**
- * Text for favorite button
+ * Text for favorite button.
  */
 favoriteButtonText = (favorite) => {
-  return favorite ? 'Add to favorites' : 'Remove from favorites';
+  return !favorite ? 'Add to favorites' : 'Remove from favorites';
+}
+
+/**
+ * Account for possible values of is_favorite.
+ */
+formatFavorite = (favorite) => {
+  if (favorite === undefined || favorite === "undefined" || favorite === "false" || favorite === false) {
+    return false
+  }
+  return true
 }
 
 /**
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
-  let fav_status = false;
   const li = document.createElement('li');
 
   const image = document.createElement('img');
@@ -166,7 +175,8 @@ createRestaurantHTML = (restaurant) => {
   li.append(address);
 
   const fav = document.createElement('a');
-  fav.innerHTML = 'Add to favorites';
+  fav_status = formatFavorite(restaurant.is_favorite);
+  fav.innerHTML = favoriteButtonText(fav_status);
   fav.title = `Add ${restaurant.name} to your favorites.`;
   fav.href = '#';
   li.append(fav);
@@ -174,9 +184,12 @@ createRestaurantHTML = (restaurant) => {
   fav.addEventListener('click', (event) => {
     event.preventDefault();
     console.log(`Pressed favorite for ${restaurant.name}!`);
+    restaurant.is_favorite = !fav_status;
     const newText = favoriteButtonText(fav_status);
-    fav.innerHTML = newText; 
     fav_status = !fav_status;
+    fav.innerHTML = newText; 
+
+    DBHelper.updateFavoriteAPI(restaurant.id, !fav_status)
   });
 
   const more = document.createElement('a');

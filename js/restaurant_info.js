@@ -20,6 +20,7 @@ window.initMap = () => {
   });
 }
 
+
 /**
  * Get current restaurant from page URL.
  */
@@ -46,6 +47,23 @@ fetchRestaurantFromURL = (callback) => {
 }
 
 /**
+ * Text for favorite button.
+ */
+favoriteButtonText = (favorite) => {
+  return !favorite ? 'Add to favorites' : 'Remove from favorites';
+}
+
+/**
+ * Account for possible values of is_favorite.
+ */
+formatFavorite = (favorite) => {
+  if (favorite === undefined || favorite === "undefined" || favorite === "false" || favorite === false) {
+    return false
+  }
+  return true
+}
+
+/**
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
@@ -63,6 +81,25 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
+  const fav = document.createElement('a');
+  fav.style.float = 'right';
+  fav_status = formatFavorite(restaurant.is_favorite);
+  fav.innerHTML = favoriteButtonText(fav_status);
+  fav.title = `Add ${restaurant.name} to your favorites.`;
+  fav.href = '#';
+  name.append(fav);
+
+  fav.addEventListener('click', (event) => {
+    event.preventDefault();
+    console.log(`Pressed favorite for ${restaurant.name}!`);
+    restaurant.is_favorite = !fav_status;
+    const newText = favoriteButtonText(fav_status);
+    fav_status = !fav_status;
+    fav.innerHTML = newText; 
+
+    DBHelper.updateFavoriteAPI(restaurant.id, !fav_status)
+  });
+  
   // fill operating hours
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
