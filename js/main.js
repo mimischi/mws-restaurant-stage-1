@@ -144,7 +144,7 @@ favoriteButtonText = (favorite) => {
  * Account for possible values of is_favorite.
  */
 formatFavorite = (favorite) => {
-  if (favorite === undefined || favorite === "undefined" || favorite === "false" || favorite === false) {
+  if (favorite == undefined || favorite == "undefined" || favorite == "false" || favorite == false) {
     return false
   }
   return true
@@ -183,13 +183,12 @@ createRestaurantHTML = (restaurant) => {
 
   fav.addEventListener('click', (event) => {
     event.preventDefault();
-    console.log(`Pressed favorite for ${restaurant.name}!`);
-    restaurant.is_favorite = !fav_status;
-    const newText = favoriteButtonText(fav_status);
     fav_status = !fav_status;
+    restaurant.is_favorite = fav_status;
+    const newText = favoriteButtonText(fav_status);
     fav.innerHTML = newText; 
 
-    DBHelper.updateFavoriteAPI(restaurant.id, !fav_status)
+    DBHelper.updateFavoriteAPI(restaurant.id, fav_status)
   });
 
   const more = document.createElement('a');

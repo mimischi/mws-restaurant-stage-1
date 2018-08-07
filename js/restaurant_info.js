@@ -1,10 +1,12 @@
 let restaurant;
+let reviews;
 var map;
 
 /**
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
+  fetchReviews();
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
@@ -130,9 +132,23 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 }
 
 /**
+ * Fetch all reviews for a specific restaurant and set their HTML.
+ */
+fetchReviews = () => {
+  DBHelper.fetchReviews((error, reviews) => {
+    if (error) { // Got an error!
+      console.error(error);
+    } else {
+      const restaurantID = getParameterByName('id');
+      self.reviews = reviews.filter(review => review.restaurant_id == restaurantID);
+    }
+  });
+}
+
+/**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
@@ -173,7 +189,7 @@ createReviewHTML = (review) => {
   head.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = new Date(review.createdAt).toLocaleString();
   date.className = 'date';
   head.appendChild(date);
 
