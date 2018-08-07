@@ -132,15 +132,14 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 }
 
 /**
- * Fetch all reviews for a specific restaurant and set their HTML.
+ * Fetch all reviews for a specific restaurant.
  */
 fetchReviews = () => {
   DBHelper.fetchReviews((error, reviews) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      const restaurantID = getParameterByName('id');
-      self.reviews = reviews.filter(review => review.restaurant_id == restaurantID);
+      self.reviews = reviews
     }
   });
 }
@@ -148,11 +147,15 @@ fetchReviews = () => {
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.reviews) => {
+fillReviewsHTML = (allReviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
+
+
+  const restaurantID = getParameterByName('id');
+  reviews = allReviews.filter(review => review.restaurant_id == restaurantID);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -239,7 +242,7 @@ submitReviewForm = (event) => {
     "restaurant_id": self.restaurant.id,
     "createdAt": unixtimestamp,
     "updatedAt": unixtimestamp,
-    "id": 10
+    "id": this.reviews.slice(-1)[0].id + 1
   };
 
   const form = document.getElementById("review-form");
@@ -255,13 +258,14 @@ submitReviewForm = (event) => {
   };
   if (!error) {
     appendReview(restaurantReview);
+    DBHelper.writeReviewstoCache([restaurantReview, ...this.reviews]);
     form.reset();
   }
 }
 
 const appendReview = (review) => {
   const ul = document.getElementById('reviews-list');
-  ul.insertAdjacentElement('afterbegin', createReviewHTML(review));
+  ul.appendChild(createReviewHTML(review));
 }
 
 const submitButtom = document.getElementById("review-submit-button");
