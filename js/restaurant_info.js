@@ -1,5 +1,7 @@
 let restaurant;
 let reviews;
+let restaurantReviews;
+let reviewsToBeSynced;
 var map;
 
 /**
@@ -7,6 +9,8 @@ var map;
  */
 window.initMap = () => {
   fetchReviews();
+  const id = getParameterByName('id');
+  fetchRestaurantReviews(id);
   fetchRestaurantFromURL((error, restaurant) => {
     if (error) { // Got an error!
       console.error(error);
@@ -135,27 +139,39 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  * Fetch all reviews for a specific restaurant. Also include reviews to be synced!
  */
 fetchReviews = () => {
-  DBHelper.fetchReviews((error, reviews) => {
+  const id = getParameterByName('id');
+  DBHelper.fetchReviews(id, (error, reviews) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
-      self.reviews = reviews
+      self.reviews = reviews;
     }
   });
+}
+
+fetchRestaurantReviews = (id) => {
+  DBHelper.fetchReviewsByRestaurantId(id, (error, reviews) => {
+    if (error) {
+      console.error(error);
+    } else {
+      self.restaurantReviews = reviews;
+    }
+  })
 }
 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (allReviews = self.reviews) => {
+fillReviewsHTML = (reviews = self.restaurantReviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
-
-  const restaurantID = getParameterByName('id');
-  reviews = allReviews.filter(review => review.restaurant_id == restaurantID);
+  // const restaurantID = getParameterByName('id');
+  // console.log(allReviews);
+  // allReviews = allReviews.filter(review => Number.isInteger(review.createdAt));
+  // reviews = allReviews.filter(review => review.restaurant_id == restaurantID);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -260,14 +276,20 @@ submitReviewForm = (event) => {
     appendReview(restaurantReview);
     let rev;
     if (!navigator.onLine) {
-      rev = [restaurantReview];
-      if (this.reviewsToBeSynced != undefined) {
-        rev = [restaurantReview, ...this.reviewsToBeSynced];
+      // rev = [restaurantReview];
+      if (this.reviewsToBeSynced == undefined) {
+        this.reviewsToBeSynced = [restaurantReview];
+      } else {
+        this.reviewsToBeSynced = [...this.reviewsToBeSynced, restaurantReview];
       }
+      rev = [restaurantReview, ...this.reviewsToBeSynced];
       DBHelper.writeReviewsToBeSynced(rev);
+
     } else {
-      rev =[restaurantReview, ...this.reviews] 
+      rev = [restaurantReview, ...this.reviews] 
       DBHelper.writeReviewstoCache(rev);
+
+      DBHelper.sendReview(restaurantReview);
     }
     this.reviews = rev;
     form.reset();
@@ -283,6 +305,9 @@ window.addEventListener('online', (event) => {
   DBHelper.getReviewsToBeSynced().then(reviews => {
     console.log('You are back online!')
     console.log('Starting to sync all reviews that we kept in cache.')
+    for (let review in reviewsToBeSynced) {
+      DBHelper.sendReview(review);
+    }
     DBHelper.writeReviewstoCache(this.reviews).then(() => {
       DBHelper.clearReviewsToBeSynced();
     });

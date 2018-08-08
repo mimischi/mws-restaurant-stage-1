@@ -192,9 +192,25 @@ class DBHelper {
   }
 
   /**
+   * Send review to API
+   */
+  static sendReview(review) {
+    fetch(`${DBHelper.DATABASE_URL}/reviews/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify(review)
+    })
+    .then(response => response.json())
+    .then(response => console.log(`Success! Send review to API!`))
+    .catch(error => console.log`Failed to send review to API. Returned status of ${error.statusText}`)
+  }
+
+  /**
    * Fetch all reviews.
    */
-  static fetchReviews(callback) {
+  static fetchReviews(id, callback) {
     DBHelper.getAllReviews()
     // DBHelper.getCachedReviews()
     .then(reviews => {
@@ -213,19 +229,34 @@ class DBHelper {
         .finally(() => callback(null, reviews))
       })
       .catch(error => callback(`Request failed. Returned status of ${error.statusText}`, null));
+
+      // The API is weird. It does not retrieve all manually added reviews
+      // when polling /reviews/. It does it correctly, when polling the API
+      // for the current restaurant ID.
+      fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`)
+      .then(response => response.json())
+      .then(reviews => {
+
+        // Write all fetched reviews to cache and return the request.
+        DBHelper.writeReviewstoCache(reviews)
+        .then(() => console.log("Added all reviews to IndexedDB."))
+        .catch(error => console.log(error))
+        .finally(() => callback(null, reviews))
+      })
+      .catch(error => callback(`Request failed. Returned status of ${error.statusText}`, null));
     });
   }
 
   /**
    * Fetch a review by its ID.
    */
-  static fetchReviewById(id, callback) {
+  static fetchReviewsByRestaurantId(id, callback) {
     // fetch all reviews with proper error handling.
-    DBHelper.fetchReviews((error, restaurants) => {
+    DBHelper.fetchReviews(id, (error, reviews) => {
       if (error) {
         callback(error, null);
       } else {
-        const review = reviews.find(r => r.id == id);
+        const review = reviews.filter(r => r.restaurant_id == id);
         if (review) { // Got the review
           callback(null, review);
         } else { // Review does not exist in the database
