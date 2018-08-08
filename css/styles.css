@@ -404,8 +404,18 @@ header nav h1 a {
   width: 100px;
 }
 
+#review-form input[type="text"],
+#review-form textarea {
+  width: 100%;
+}
+
 #review-form select {
+  margin-left: 10px;
   width: 50px;
+}
+
+#review-form input[type="submit"] {
+  padding: 10px;
 }
 
 /* ====================== Media Queries ====================== */
