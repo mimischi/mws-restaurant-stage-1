@@ -132,7 +132,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 }
 
 /**
- * Fetch all reviews for a specific restaurant.
+ * Fetch all reviews for a specific restaurant. Also include reviews to be synced!
  */
 fetchReviews = () => {
   DBHelper.fetchReviews((error, reviews) => {
@@ -258,7 +258,15 @@ submitReviewForm = (event) => {
   };
   if (!error) {
     appendReview(restaurantReview);
-    DBHelper.writeReviewstoCache([restaurantReview, ...this.reviews]);
+    if (!navigator.onLine) {
+      toBeSycnedReviews = [restaurantReview];
+      if (this.reviewsToBeSynced != undefined) {
+        toBeSycnedReviews = [restaurantReview, ...this.reviewsToBeSynced];
+      }
+      DBHelper.writeReviewsToBeSynced(toBeSycnedReviews);
+    } else {
+      DBHelper.writeReviewstoCache([restaurantReview, ...this.reviews]);
+    }
     form.reset();
   }
 }
@@ -267,6 +275,16 @@ const appendReview = (review) => {
   const ul = document.getElementById('reviews-list');
   ul.appendChild(createReviewHTML(review));
 }
+
+window.addEventListener('online', (event) => {
+  DBHelper.getReviewsToBeSynced().then(reviews => {
+    console.log('You are back online!')
+    console.log('Starting to sync all reviews that we kept in cache.')
+    DBHelper.writeReviewstoCache(this.reviews).then(() => {
+      DBHelper.clearReviewsToBeSynced();
+    });
+  });
+});
 
 const submitButtom = document.getElementById("review-submit-button");
 submitButtom.addEventListener('click', (event) => {

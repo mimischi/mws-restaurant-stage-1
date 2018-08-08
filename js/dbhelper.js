@@ -13,6 +13,7 @@ class DBHelper {
     return idb.open('restaurants', 1, function(upgradeDb) {
       upgradeDb.createObjectStore('restaurants', { keyPath: 'id' });
       upgradeDb.createObjectStore('reviews', { keyPath: 'id' });
+      upgradeDb.createObjectStore('reviewsToBeSynced', { keyPath: 'id' });
     });
   }
 
@@ -61,15 +62,28 @@ class DBHelper {
   }
 
   /**
-   * Grab specific reviews from the cache
+   * Grab all reviews to be synced.
    */
-  static getCachedReview(id) {
+  static getReviewsToBeSynced() {
     return DBHelper.openDatabase().then(db => {
-      const tx = db.transaction("reviews");
-      const store = tx.objectStore("reviews");
+      const tx = db.transaction("reviewsToBeSynced");
+      const storeToBeSynced = tx.objectStore("reviewsToBeSynced");
 
-      return store.get(parseInt(id));
+      return storeToBeSynced.getAll();
     })
+  }
+
+  /**
+   * Grab all reviews, those cached and those to be synced.
+   */
+  static getAllReviews() {
+    let cachedReviews = DBHelper.getCachedReviews().then(reviews => reviews)
+    let offlineReviews = DBHelper.getReviewsToBeSynced().then(reviews => reviews);
+
+    const promise = Promise.all([cachedReviews, offlineReviews])
+    .then(reviews => [...reviews[0], ...reviews[1]])
+
+    return promise
   }
 
   /**
@@ -99,6 +113,36 @@ class DBHelper {
       for (let review of reviews) {
         store.put(review)
       }
+
+      return tx.complete;
+    })
+  }
+
+  /**
+   * Write all reviews to store, which should be send when we get back online again
+   */
+  static writeReviewsToBeSynced(reviews) {
+    return DBHelper.openDatabase().then(db => {
+      const tx = db.transaction("reviewsToBeSynced", "readwrite");
+      const store = tx.objectStore("reviewsToBeSynced");
+
+      for (let review of reviews) {
+        store.put(review)
+      }
+
+      return tx.complete;
+    })
+  }
+
+  /**
+   * Remove all reviews that needed to be synced from IDB.
+   */
+  static clearReviewsToBeSynced(reviews) {
+    return DBHelper.openDatabase().then(db => {
+      const tx = db.transaction("reviewsToBeSynced", "readwrite");
+      const store = tx.objectStore("reviewsToBeSynced");
+
+      store.clear();
 
       return tx.complete;
     })
@@ -151,10 +195,11 @@ class DBHelper {
    * Fetch all reviews.
    */
   static fetchReviews(callback) {
-    DBHelper.getCachedReviews()
+    DBHelper.getAllReviews()
+    // DBHelper.getCachedReviews()
     .then(reviews => {
       if (reviews.length !== 0) {
-        return callback(null, reviews)
+        return callback(null, reviews);
       }
 
       fetch(`${DBHelper.DATABASE_URL}/reviews/`)
