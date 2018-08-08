@@ -258,15 +258,18 @@ submitReviewForm = (event) => {
   };
   if (!error) {
     appendReview(restaurantReview);
+    let rev;
     if (!navigator.onLine) {
-      toBeSycnedReviews = [restaurantReview];
+      rev = [restaurantReview];
       if (this.reviewsToBeSynced != undefined) {
-        toBeSycnedReviews = [restaurantReview, ...this.reviewsToBeSynced];
+        rev = [restaurantReview, ...this.reviewsToBeSynced];
       }
-      DBHelper.writeReviewsToBeSynced(toBeSycnedReviews);
+      DBHelper.writeReviewsToBeSynced(rev);
     } else {
-      DBHelper.writeReviewstoCache([restaurantReview, ...this.reviews]);
+      rev =[restaurantReview, ...this.reviews] 
+      DBHelper.writeReviewstoCache(rev);
     }
+    this.reviews = rev;
     form.reset();
   }
 }
