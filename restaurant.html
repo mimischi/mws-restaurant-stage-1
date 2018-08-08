@@ -55,8 +55,8 @@
     <!-- End reviews -->
 
     <!-- Add user reviews -->
-    <section id="review-section">
-      <p>Review the restaurant!</p>
+    <section role="form" aria-labelledby="form-legend" id="review-section">
+      <legend id="form-legend">Review the restaurant!</legend>
 
       <form id="review-form" class="review-form" action="">
         <div class="review-form-el">
@@ -78,7 +78,7 @@
           <textarea name="comments" id="comments" cols="30" rows="10" placeholder="Enter your review here..."></textarea>
         </div>
         <div class="review-form-el">
-          <input type="submit" id="review-submit-button" value="Submit my review!">
+          <button type="submit" id="review-submit-button">Submit my review!</button>
         </div>
       </form>
     </section>

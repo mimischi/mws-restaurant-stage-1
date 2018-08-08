@@ -396,7 +396,7 @@ header nav h1 a {
 #review-form input[type="text"],
 #review-form select,
 #review-form textarea,
-#review-form input[type="submit"] {
+#review-form button {
   font-size: 1em;
 }
 
@@ -414,7 +414,7 @@ header nav h1 a {
   width: 50px;
 }
 
-#review-form input[type="submit"] {
+#review-form button {
   padding: 10px;
 }
 
