@@ -215,13 +215,11 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 }
 
 registerServiceWorker = () => {
-  // if (!navigator.serviceWorker) return;
+  if (!navigator.serviceWorker) return;
 
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').then((event) => {
-      console.log(`Service worker registered! Scope: ${event.scope}`)
-    }).catch((error) => {
-      console.log(`Failed to register service worker: ${error}`)
-    })
-  }
+  navigator.serviceWorker.register('/sw.js').then((event) => {
+    console.log(`Service worker registered! Scope: ${event.scope}`)
+  }).catch((error) => {
+    console.log(`Failed to register service worker: ${error}`)
+  })
 }

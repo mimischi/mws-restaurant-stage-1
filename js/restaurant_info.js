@@ -294,3 +294,17 @@ submitButtom.addEventListener('click', (event) => {
   event.preventDefault();
   submitReviewForm(event);
 });
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  registerServiceWorker();
+});
+
+registerServiceWorker = () => {
+  if (!navigator.serviceWorker) return;
+
+  navigator.serviceWorker.register('/sw.js').then((event) => {
+    console.log(`Service worker registered! Scope: ${event.scope}`)
+  }).catch((error) => {
+    console.log(`Failed to register service worker: ${error}`)
+  })
+}
